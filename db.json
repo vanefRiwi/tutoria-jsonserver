@@ -1,0 +1,28 @@
+{
+  "characters": [
+    {
+      "id": 1,
+      "name": "Rick Sanchez",
+      "status": "Alive",
+      "species": "Human"
+    },
+    {
+      "id": 2,
+      "name": "Morty Smith",
+      "status": "Alive",
+      "species": "Human"
+    },
+    {
+      "id": 3,
+      "name": "Rick Perez",
+      "status": "Alive",
+      "species": "Human"
+    },
+    {
+      "name": "Rick Martinez",
+      "status": "Alive",
+      "species": "Human",
+      "id": 4
+    }
+  ]
+}
