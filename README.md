@@ -240,6 +240,7 @@ server.get('/coders/active', (req, res) => {
 ```
 
 > El "router automático" es la línea `server.use(router)` que va al final. Ese `router` fue creado con `jsonServer.router('db.json')` y genera automáticamente los endpoints GET, POST, PUT, PATCH y DELETE para `/coders`. Registrarlo al final garantiza que tus rutas personalizadas tengan prioridad.
+
 > **lowdb**: es la librería interna que usa json-server para leer y escribir `db.json`. Solo la tocas cuando accedes a `router.db` para filtrar datos manualmente, como en la ruta `/coders/active`.
 
 ---
