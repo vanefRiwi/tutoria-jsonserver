@@ -307,7 +307,7 @@ Usa los métodos HTTP `GET`, `POST`, `PUT`, `PATCH`, `DELETE`.
 > **¿Qué es Postman?**  
 > Postman es una herramienta que te permite hacer peticiones HTTP (GET, POST, PUT, PATCH, DELETE) a tu servidor sin necesidad de escribir código. Es ideal para probar que tus endpoints funcionan correctamente.
 
-> **Opción 1 — Extensión en VS Code (la que usamos en clase):**  
+ **Opción 1 — Extensión en VS Code (la que usamos en clase):**  
 > 1. Abre VS Code → ve a Extensiones (`Ctrl+Shift+X`)  
 > 2. Busca **Postman** e instálala  
 > 3. Inicia sesión con tu cuenta de Postman (o crea una gratis)  
@@ -316,8 +316,8 @@ Usa los métodos HTTP `GET`, `POST`, `PUT`, `PATCH`, `DELETE`.
 > 6. Elige el método, escribe la URL y haz clic en **Send**  
 
 > Para un **POST**, ve a **Body → raw → JSON** y escribe:
-> ```json
-> {
+ ```json
+ {
   "name": "Pedro Perez",
   "language": "TypeScript",
   "active": true
