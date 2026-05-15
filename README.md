@@ -362,7 +362,7 @@ GET http://localhost:3000/coders
 
 ## Rutas personalizadas
 
-| Método | Ruta base | Ruta | Qué hace |
+| Método | URL base | Ruta | Qué hace |
 |---|---|---|---|
 | `GET` | `http://localhost:3000` | `/health` | Verifica que el servidor está vivo |
 | `GET` | `http://localhost:3000` | `/coders/active` | Devuelve solo los coders con `active: true` |
