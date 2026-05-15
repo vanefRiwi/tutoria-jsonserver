@@ -304,10 +304,38 @@ http://localhost:3000/health
 
 Usa los métodos HTTP `GET`, `POST`, `PUT`, `PATCH`, `DELETE`.
 
+> **¿Qué es Postman?**  
+> Postman es una herramienta que te permite hacer peticiones HTTP (GET, POST, PUT, PATCH, DELETE) a tu servidor sin necesidad de escribir código. Es ideal para probar que tus endpoints funcionan correctamente.
+
+> **Opción 1 — Extensión en VS Code (la que usamos en clase):**  
+> 1. Abre VS Code → ve a Extensiones (`Ctrl+Shift+X`)  
+> 2. Busca **Postman** e instálala  
+> 3. Inicia sesión con tu cuenta de Postman (o crea una gratis)  
+> 4. Haz clic en el ícono de Postman en la barra lateral  
+> 5. Clic en **New HTTP Request**  
+> 6. Elige el método, escribe la URL y haz clic en **Send**  
+
+> Para un **POST**, ve a **Body → raw → JSON** y escribe:
+> ```json
+> {
+  "name": "Pedro Perez",
+  "language": "TypeScript",
+  "active": true
+}
+
+ ```
+
+> **Opción 2 — Aplicación de escritorio:**  
+> Si prefieres instalarlo por separado, descárgalo en [postman.com/downloads](https://www.postman.com/downloads/). El flujo es exactamente el mismo.
+
+> ⚠️ El servidor debe estar corriendo (`npm start` o `npm run dev`) para que Postman reciba respuesta.
+
 ---
 
 ## URL Base
+Para realizar las pruebas en postman ten en cuenta las siguientes URL: 
 
+URL BASE
 ```
 http://localhost:3000
 ```
@@ -316,7 +344,7 @@ http://localhost:3000
 
 ## Endpoints automáticos (generados por JSON Server)
 
-| Método | Ruta base | Ruta | Qué hace |
+| Método | URL base | Ruta | Qué hace |
 |---|---|---|---|
 | `GET` | `http://localhost:3000` | `/coders` | Lista todos los coders |
 | `GET` | `http://localhost:3000` | `/coders/1` | Trae el coder con id 1 |
@@ -324,6 +352,13 @@ http://localhost:3000
 | `PUT` | `http://localhost:3000` | `/coders/1` | Reemplaza el coder 1 completo |
 | `PATCH` | `http://localhost:3000` | `/coders/1` | Actualiza solo los campos enviados |
 | `DELETE` | `http://localhost:3000` | `/coders/1` | Elimina el coder 1 |
+
+**EJEMPLO DE UN ENDPOINT:**
+
+**ESTRUCTURA:** `METODO + URL BASE + RUTA`
+```http
+GET http://localhost:3000/coders
+```
 
 ## Rutas personalizadas
 
