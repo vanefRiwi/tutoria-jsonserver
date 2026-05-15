@@ -1,4 +1,4 @@
-# GUIA PARA JSON SERVER API PARA MANEJAR CODERS
+# GUIA PARA JSON SERVER — API DE CODERS
 
 ### JSON Server usando ES Modules
 
@@ -6,116 +6,99 @@ Proyecto básico usando JSON Server con:
 
 - ES Modules (`import`)
 - Rutas personalizadas
-- Middleware
-- Validaciones
+- Middleware de logs
+- Validaciones en POST
 - Reescritura de rutas
 
+---
 
-Pasos uno a uno de cero:
-## 1. Verificar la version de Node que tengamos `node --version`
+## Pasos uno a uno desde cero
 
-## 2. Intalar Node si no lo tenemos (aqui pasos):
+---
 
-Descárgalo desde [nodejs.org](https://nodejs.org) y sigue el instalador.
+## 1. Verificar la versión de Node
 
-Una vez instalado, verifica que quedó bien:
 ```bash
 node --version
 npm --version
 ```
-Si ambos muestran un número de versión, estás listo.
 
-## Crear la carpeta del proyecto y entrar a ella
+Si ambos muestran un número de versión, estás listo. Si no, descarga Node desde [nodejs.org](https://nodejs.org) — elige la versión **LTS** y sigue el instalador.
+
+---
+
+## 2. Crear la carpeta del proyecto y entrar a ella
 
 ```bash
 mkdir json-server
 cd json-server
 ```
-
+Puede ser desde la terminal o creando un nueva carpeta desde tu explorador de archivos.
 > A partir de aquí, todos los comandos se ejecutan dentro de esta carpeta.
 
-## 3. Crear el archivo principal del servidor `server.js`
+---
 
-Desde la terminal, estando dentro de la carpeta del proyecto:
+## 3. Crear el `package.json`
 
-```bash
-touch server.js
-```
-
-> O simplemente crea un archivo nuevo llamado `server.js` desde tu editor (VS Code → New File).
-Por ahora déjalo vacío — lo vamos a llenar paso a paso más adelante.
-
-## 4. Crear el archivo donde vamos almacenar los datos `db.json`
-
-## 5. Necesitamos crear el archivo `package.json` este archivo lo vamos a crear en nuestro proyecto de la siguiente manera: 
-
-El package JSON se genera automáticamente con `npm init -y` y puedes editarlo manualmente después, por ejemplo: para agregar `"type": "module"` o cambiar el nombre del proyecto. 
-Cuando alguien descarga tu proyecto y corre `npm install`, Node lee este archivo y descarga todo lo que necesita.
+El `package.json` es el "documento de identidad" del proyecto. Le dice a Node.js cómo se llama, qué librerías necesita y qué comandos puedes ejecutar.
 
 ```bash
 npm init -y
 ```
 
-Una vez creado el `package.json` con `npm init -y`, agrega el script `dev` manualmente.
-Abre el archivo y asegúrate de que la sección `scripts` quede así:
+Esto lo genera automáticamente. Luego ábrelo y agrega `"type": "module"` y el script `dev` manualmente, hasta que quede así:
 
 ```json
-"scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js"
+{
+  "name": "json-server",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  }
 }
 ```
 
-> `npm start` ejecuta el servidor una vez. `npm run dev` lo ejecuta con nodemon, que lo reinicia automáticamente cada vez que guardas un cambio en el código.
+> `"type": "module"` hay que agregarlo a mano. Sin esta línea, Node interpreta el archivo con CommonJS (sistema antiguo) y el `import` de `server.js` daría error. Node no puede detectarlo solo porque ambos sistemas coexisten.
 
-> El `package.json` es el "documento de identidad" del proyecto. Le dice a Node.js:
-- Cómo se llama el proyecto
-- Qué librerías externas necesita (dependencias)
-- Qué comandos puedes ejecutar (scripts como `npm start`)
+> `npm start` ejecuta el servidor una vez. `npm run dev` lo ejecuta con nodemon, que lo reinicia automáticamente cada vez que guardas un cambio.
 
 ---
-## 6. Instalar lo que vamos a necesitar para la creación de la API que es `json-server` y `nodemon`
 
-Instalación de json-server:
+## 4. Instalar las dependencias
+
 ```bash
 npm install json-server
-```
-Instalación de nodemon(como dependencia):
-
-```bash
 npm install --save-dev nodemon
-
 ```
-(instalación global)
 
-```bash
-npm install -g nodemon
-```
-- **json-server**: librería que convierte tu `db.json` en una API REST funcional. Sin ella no tienes servidor ni rutas. Es el núcleo del proyecto.
+- **json-server**: librería que convierte tu `db.json` en una API REST funcional. Sin ella no tienes servidor ni rutas.
+- **nodemon**: detecta cambios en tus archivos y reinicia el servidor automáticamente. Solo se necesita en desarrollo, por eso va con `--save-dev`.
 
-- **nodemon**: herramienta que detecta cambios en tus archivos y reinicia el servidor automáticamente. Sin nodemon tendrías que parar el servidor (Ctrl+C) y volver a ejecutarlo cada vez que editas el código. Solo se necesita en desarrollo.
+> Estos comandos añaden las dependencias al `package.json` automáticamente y crean la carpeta `node_modules/` con todo lo descargado.
 
-> [!NOTE]
-> Esos dos comandos añaden las dependencias al package.json automáticamente. Solo `"type": "module"` tienes que agregarlo tú a mano porque npm no tiene forma de saber que lo necesitas:
-
-- Sin esta línea, Node interpreta los archivos como CommonJS (el sistema antiguo)
-y el `import` de la primera línea de `server.js` daría error. Node no puede
-detectarlo solo porque ambos sistemas coexisten — tienes que declararlo explícitamente.
-
->[!WARNING]
-> Esto crea automáticamente la carpeta `node_modules/` con todas las librerías
-descargadas. Esta carpeta puede pesar varios MB — **no la subas a git**.
-Crea un archivo `.gitignore` en la raíz del proyecto con este contenido:
+> ⚠️ **No subas `node_modules/` a git.** Crea un archivo `.gitignore` en la raíz con:
 
 ```.gitignore
 node_modules/
 ```
----
-## 7. Una vez creado el archivo `db.json` agregarle datos de ejemplo:
 
-`db.json`
+---
+
+## 5. Crear los archivos del proyecto
 
 ```bash
+touch server.js
+touch db.json
+```
+
+O créalos directamente desde VS Code (New File o Nuevo Archivo `server.js` y `db.json`). Por ahora déjalos vacíos, los vamos a llenar en los pasos siguientes.
+
+---
+
+## 6. Llenar el `db.json` con datos de ejemplo
+
+```json
 {
   "coders": [
     {
@@ -140,249 +123,243 @@ node_modules/
 }
 ```
 
->  Cada coder tiene: id, name, language y active. Puedes añadir los campos que quieras, pero mantenlos consistentes.
+> Cada coder tiene: `id`, `name`, `language` y `active`. Puedes añadir los campos que quieras, pero mantenlos consistentes en todos los objetos.
+> 
 
+---
 
-# Estructura del proyecto
-Para este momento tu estructura del proyecto debe verse de esta manera:
+## Estructura del proyecto hasta aquí
+Tu proyecto se debe ver de la siguiente manera si haz realizado los pasos anteriores de manera exitosa.
 
-```bash
+```
 json-server/
 │
 ├── package.json
+├── package-lock.json
 ├── server.js
 ├── db.json
-├── package-lock.json
+├── .gitignore
 └── README.md
 ```
-## 8. Implementación del Server BASE
-Empieza con la estructura base:
+
+---
+
+## 7. Implementar el `server.js` — Parte 1: base y middlewares
 
 ```js
-import jsonServer from 'json-server';
+import jsonServer from 'json-server'; // Trae las herramientas de json-server ( "import ... from" es la sintaxis moderna de ES Modules.)
 
-const server = jsonServer.create();
-const middlewares = jsonServer.defaults();
-const router = jsonServer.router('db.json');
-const PORT = 3000;
+const server = jsonServer.create();  // Crea nuestro servidor web vacío ( esto lo guardamos en "server" para registrar rutas y middlewares sobre él.)
+const middlewares = jsonServer.defaults(); // Activa funciones básicas del middleware (cors, logger, no cache) Lo guardamos en "middlewares" para activarlo más adelante con server.use()
+const router = jsonServer.router('db.json'); // Conecta el servidor al archivo db.json. A partir de aquí json-server sabe que ese archivo es la "base de datos" y genera automáticamente los endpoints 
+const PORT = 3000; // Puerto donde el servidor va a escuchar (Guardarlo en una constante facilita cambiarlo sin editar varias lineas)
 
-server.use(jsonServer.bodyParser);
-server.use(middlewares);
+server.use(jsonServer.bodyParser); // Lee el cuerpo (body) de las peticiones POST y PUT y lo convierte en un objeto JavaScript accesible desde req.body.(va antes de los middlewares)
+server.use(middlewares); // Activa los tres middlewares básicos preparados arriba: logger, cors y no-cache.
 
-// Middleware de logs 
+// Middleware personalizado de de logs: se ejecuta en cada petición que llega
 server.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+
+    // req.method → el verbo HTTP de la petición: GET, POST, PUT, DELETE...
+   // req.url    → la ruta que pidieron: /coders, /coders/active, /health...
+  // Ejemplo de salida en consola: GET /coders
+
+  console.log(`${req.method} ${req.url}`);
   next();
+
+   // next() le dice al servidor "este middleware ya terminó, pasa al siguiente".
+  // Sin next(), la petición queda congelada aquí
+ // y el cliente esperaría una respuesta que nunca llegaría.
 });
 ```
 
-> cambia de proyecto en proyecto el nombre del db.json y el PORT si quieres otro.
+> Lo que puede cambiar de proyecto a proyecto es el nombre del `db.json` y el `PORT`.
 
-### ¿Que es un middleware?
-Un **middleware** es una función que se ejecuta en el camino entre que llega
-la petición y que se envía la respuesta. Piénsalo como los filtros de un aeropuerto: primero chequean el tiquete, luego seguridad, luego el pasaporte. Cada paso puede dejar pasar o bloquear. En código, cada middleware recibe `(req, res, next)` y llama `next()` para pasar al siguiente — si no llama `next()`, la petición queda congelada.
+### ¿Qué es un middleware?
 
-## 9. Implementación del server RUTAS personalizadas
-Añade después del middleware de logs estas 4 rutas, adaptadas para hacer peticiones a coders:
+Una función que se ejecuta **en el camino** entre que llega la petición y que se envía la respuesta. Como los filtros del aeropuerto: tiquete → seguridad → pasaporte. Cada paso puede dejar pasar o bloquear. En código, cada middleware recibe `(req, res, next)` y llama `next()` para pasar al siguiente — si no llama `next()`, la petición queda congelada.
+
+---
+## NOTA:
+### req, res y next
+
+Estos tres parámetros aparecen en cada middleware y ruta del servidor.
+
+| Parámetro | Qué es | Ejemplo en el código |
+|---|---|---|
+| `req` (request) | La petición que llegó. Contiene el método, la URL, el body y los query params. | `req.body.name`, `req.query.name`, `req.method` |
+| `res` (response) | La respuesta que vas a enviar de vuelta al cliente. | `res.status(200).json({...})` |
+| `next` | Función que pasa el control al siguiente middleware. Sin llamarla, la petición queda congelada. | `next()` en la validación del POST |
+
 ```js
-// Ruta 1: health check
+server.use((req, res, next) => {
+  console.log(req.method, req.url); // leemos la petición
+  next();                           // pasamos al siguiente
+});
+```
+---
+
+## 8. Implementar el `server.js` — Parte 2: rutas personalizadas
+
+Las rutas personalizadas van **antes del router automático**.( el router automatico es esto: `server.use(router)`) Si las pones después, nunca se ejecutan.
+
+```js
+// Ruta 1: health check — verifica que el servidor está vivo
 server.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Servidor de coders OK' });
+  // status(200) = "todo bien" | .json() convierte el objeto a JSON y lo envía
+  res.status(200).json({ status: 'ok', message: 'Servidor de coders esta OK' });
 });
 
-// Ruta 2: solo coders activos
+// Ruta 2: valida el POST antes de que json-server guarde en db.json
+server.post('/coders', (req, res, next) => {
+  
+  const { name, language } = req.body; // Desestructuración: extrae name y language de lo que el cliente envió en el body
+
+  if (!name || !language) {
+    return res.status(400).json({ error: 'name y language son obligatorios' });  // Si falta alguno, respondemos con error y cortamos la función con return
+    // status(400) = "petición incorrecta" — el cliente envió datos incompletos
+  }
+
+  
+
+  next(); // Validación superada → next() pasa el control al router automático, (que es quien realmente escribe el nuevo coder en db.json)
+});
+
+// Ruta 3: devuelve solo los coders con active: true
 server.get('/coders/active', (req, res) => {
-  const db = router.db;
+
+  const db = router.db;   // router.db accede a db.json directamente desde código (usa lowdb internamente)
+
+  // .get('coders')        → agarra el arreglo del db.json
+  // .filter({active:true})→ filtra solo los activos
+  // .value()              → convierte el resultado a array JS normal (obligatorio al final)
   const activos = db.get('coders').filter({ active: true }).value();
+
   res.status(200).json(activos);
 });
-
-// Ruta 3: buscar por nombre
-server.get('/coders/search', (req, res) => {
-  const searchName = req.query.name;
-  if (!searchName) {
-    return res.status(400).json({ error: 'Parámetro name requerido' });
-  }
-  const db = router.db;
-  const results = db.get('coders')
-    .filter(c => c.name.toLowerCase().includes(searchName.toLowerCase()))
-    .value();
-  res.status(200).json(results);
-});
-
-// Ruta 4: validar POST (name y language son obligatorios)
-server.post('/coders', (req, res, next) => {
-  const { name, language } = req.body;
-  if (!name || !language) {
-    return res.status(400).json({ error: 'name y language son obligatorios' });
-  }
-  next();
-});
 ```
 
-> [!WARNING]
->  Estas rutas van antes del router automático. Si las pones después, nunca se ejecutan.
+> El "router automático" es la línea `server.use(router)` que va al final. Ese `router` fue creado con `jsonServer.router('db.json')` y genera automáticamente los endpoints GET, POST, PUT, PATCH y DELETE para `/coders`. Registrarlo al final garantiza que tus rutas personalizadas tengan prioridad.
+> **lowdb**: es la librería interna que usa json-server para leer y escribir `db.json`. Solo la tocas cuando accedes a `router.db` para filtrar datos manualmente, como en la ruta `/coders/active`.
 
-- El "router automático" es la línea `server.use(router)` que se agrega al final del archivo. Ese `router` fue creado con `jsonServer.router('db.json')` y es quien genera automáticamente los endpoints GET, POST, PUT, PATCH y DELETE para`/coders`. Si lo registras antes que tus rutas personalizadas, él intercepta todas las peticiones primero y tus rutas nunca se ejecutan.
+---
 
-## 10. Implementación del server CIERRE
-Añade al final de server.js el rewriter y el arranque del servidor:
+## 9. Implementar el `server.js` — Parte 3: cierre
+
 ```js
-// Ruta alternativa /api/coders → /coders
+// Ruta alternativa: /api/coders → /coders
 server.use(jsonServer.rewriter({ '/api/*': '/$1' }));
 
-// Router automático (SIEMPRE al final)
+// Router automático: genera GET, POST, PUT, PATCH y DELETE para /coders.
+// SIEMPRE al final de las rutas — si va antes, intercepta las rutas personalizadas y nunca se ejecutan
 server.use(router);
 
-// Arrancar
+// Levantar el servidor en el puerto indicado.
+// El callback solo se ejecuta una vez cuando el servidor está listo.
 server.listen(PORT, () => {
   console.log('============================');
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log('============================');
-  console.log(`GET http://localhost:${PORT}/coders`);
-  console.log(`GET http://localhost:${PORT}/coders/active`);
-  console.log(`GET http://localhost:${PORT}/coders/search?name=ana`);
+  console.log(`GET  http://localhost:${PORT}/coders`);
+  console.log(`GET  http://localhost:${PORT}/coders/active`);
   console.log(`POST http://localhost:${PORT}/coders`);
-  console.log(`GET http://localhost:${PORT}/health`);
+  console.log(`GET  http://localhost:${PORT}/health`);
 });
-
 ```
->  Tu server.js ya está completo. Ahora a instalarlo y ejecutarlo.
-(para que hago el rewritter, que es lo del router automatico, un poco más de explicación sobre el )
 
-- **¿Para qué sirve el rewriter?**
-Permite que una misma ruta funcione con dos URLs distintas sin duplicar código.
-La regla `'/api/*': '/$1'` le dice al servidor: "si alguien pide `/api/coders`,
-trátalo internamente como `/coders`". El `*` captura lo que venga después de
-`/api/` y `$1` lo reutiliza. Así tu cliente puede usar `/coders` o `/api/coders`
-indistintamente.
+**¿Para qué sirve el rewriter?**
+Permite que una misma ruta funcione con dos URLs distintas sin duplicar código. La regla `'/api/*': '/$1'` le dice al servidor: si alguien pide `/api/coders`, trátalo como `/coders`. El `*` captura lo que venga después de `/api/` y `$1` lo reutiliza.
 
-- **¿Qué es el router automático (`server.use(router)`)?**
-Es la última pieza. El `router` fue configurado al principio con
-`jsonServer.router('db.json')` y tiene toda la lógica REST lista: lee el
-`db.json`, genera las rutas y escribe los cambios de vuelta al archivo cuando
-haces un POST, PUT o DELETE. Registrarlo al final garantiza que tus rutas
-personalizadas (health, active, search, validación del POST) tengan prioridad.
-
+---
 
 ## Ejecución
 
-### Se instalan dependencias:
-Esto si el proyecto ya tiene creada su `package.json` con sus dependencias.
+### Instalar dependencias (si es la primera vez o si clonaste el proyecto):
 
 ```bash
 npm install
-# Lee package.json y descarga json-server + nodemon
-# Crea la carpeta node_modules automáticamente
 ```
+
 ### Ejecutar el servidor:
+
 ```bash
-npm start   # para producción
-npm run dev # para desarrollo (se recarga al guardar)
-```
-### Probar que funciona 
-
-1. Abrir en el navegador
-```bash
-# Abre en el navegador:
-http://localhost:3001/coders
-http://localhost:3001/coders/active
-http://localhost:3001/coders/search?name=ana
-http://localhost:3001/health
-```
-
-
-2. Probar con Postman utilizando los diferentes metodos HTTP: `GET`, `POST`,`PUT`, `PATCH`, `DELETE`
-
-# URL Base
-
-```txt
-http://localhost:3001
+npm start      # producción — ejecuta una vez
+npm run dev    # desarrollo — se recarga al guardar
 ```
 
 ---
 
-# Endpoints automáticos
+## Probar que funciona
 
-## Obtener CODERS
+### 1. Abrir en el navegador
 
-```http
-GET /coders
+```
+http://localhost:3000/coders
+http://localhost:3000/coders/active
+http://localhost:3000/health
+```
+
+### 2. Probar con Postman
+
+Usa los métodos HTTP `GET`, `POST`, `PUT`, `PATCH`, `DELETE`.
+
+---
+
+## URL Base
+
+```
+http://localhost:3000
 ```
 
 ---
 
-## Obtener CODERS por ID
+## Endpoints automáticos (generados por JSON Server)
 
-```http
-GET /coders/1
-```
+| Método | Ruta base | Ruta | Qué hace |
+|---|---|---|---|
+| `GET` | `http://localhost:3000` | `/coders` | Lista todos los coders |
+| `GET` | `http://localhost:3000` | `/coders/1` | Trae el coder con id 1 |
+| `POST` | `http://localhost:3000` | `/coders` | Crea un nuevo coder |
+| `PUT` | `http://localhost:3000` | `/coders/1` | Reemplaza el coder 1 completo |
+| `PATCH` | `http://localhost:3000` | `/coders/1` | Actualiza solo los campos enviados |
+| `DELETE` | `http://localhost:3000` | `/coders/1` | Elimina el coder 1 |
 
----
+## Rutas personalizadas
 
-## Crear CODERS
+| Método | Ruta base | Ruta | Qué hace |
+|---|---|---|---|
+| `GET` | `http://localhost:3000` | `/health` | Verifica que el servidor está vivo |
+| `GET` | `http://localhost:3000` | `/coders/active` | Devuelve solo los coders con `active: true` |
+| `POST` | `http://localhost:3000` | `/coders` | Crea un coder validando que vengan `name` y `language` |
 
-```http
-POST /coders
-```
-
-Body:
+### Ejemplo body para POST:
 
 ```json
-  {
-      "id": 4,
-      "name": "Pedro Perez",
-      "language": "TypeScript",
-      "active": true
-    }
+{
+  "name": "Pedro Perez",
+  "language": "TypeScript",
+  "active": true
+}
 ```
 
----
-
-# Rutas personalizadas
+> El `id` no hace falta enviarlo — JSON Server lo genera automáticamente.
 
 ---
 
-## Health Check
+## Reescritura de rutas
 
-```http
-GET /health
+También puedes usar el prefijo `/api/`:
+
+```
+GET /api/coders  →  equivale a  GET /coders
 ```
 
----
-
-## CODERS ACTIVOS
-
-```http
-GET /coders/active
-```
+Esto es una convención común en APIs REST — indica que estás hablando con una API, no con una página web. El resultado es idéntico, puedes usar cualquiera de las dos formas.
 
 ---
 
-## Buscar CODERS
-
-```http
-GET /coders/search?name=ana
-```
-
----
-
-# Reescritura de rutas
-
-También puedes usar:
-
-```http
-GET /api/coders
-```
-
-> La reescritura de rutas permite ofrecer una URL alternativa con el prefijo `/api/`. Esto es una convención común en APIs REST — indica que estás hablando con una API, no con una página web. Internamente el servidor convierte `/api/coders` en `/coders` antes de procesarla, así que el resultado es idéntico. Puedes usar cualquiera de las dos formas desde tu cliente o desde Postman.
-
----
-
-# Tecnologías utilizadas
+## Tecnologías utilizadas
 
 - Node.js
-- JSON Server
+- JSON Server `0.17.4`
 - ES Modules
-
----
