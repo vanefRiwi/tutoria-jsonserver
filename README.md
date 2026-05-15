@@ -50,7 +50,7 @@ Esto lo genera automáticamente. Luego ábrelo y agrega `"type": "module"` y el 
 
 ```json
 {
-  "name": "json-server",
+  "name": "tutoria-jsonserver",
   "type": "module",
   "scripts": {
     "start": "node server.js",
