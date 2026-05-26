@@ -2,7 +2,7 @@
 
 Una API falsa completa con cero backend real. Perfecta para prototipos y practicar fetch.
 
-- ver [Volver al Readme principal JSON-SERVER rutas personalizadas](./README.md).
+- ver [Volver al Readme principal JSON-SERVER con rutas personalizadas](./README.md).
 ---
 
 ## ¿Qué es json-server?
