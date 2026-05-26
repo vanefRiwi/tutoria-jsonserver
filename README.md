@@ -10,7 +10,7 @@ Proyecto básico usando JSON Server con:
 - Validaciones en POST
 - Reescritura de rutas
 
-- ver [Cómo hacer un proyecto json-server sin rutas personalizadas(+fecth)](./json-serverSimple.md).
+- ver [Cómo hacer un proyecto JSON Server sin rutas personalizadas + Fetch API ](./json-serverSimple.md).
 ---
 
 ## Pasos uno a uno desde cero
